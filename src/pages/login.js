@@ -43,7 +43,7 @@ const Login = () => {
   const [password, setPassword] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [errors, setErrors] = useState({})
-  const classes = useStyles()
+  const styles = useStyles()
 
   const handleSubmit = e => {
     e.preventDefault()
@@ -61,6 +61,7 @@ const Login = () => {
       )
       .then(res => {
         console.log(res.data)
+        localStorage.setItem('idToken', `Bearer ${res.data.token}`)
         setIsLoading(false)
         history.push('/')
       })
@@ -71,12 +72,12 @@ const Login = () => {
   }
 
   return (
-    <Grid container className={classes.form}>
+    <Grid container className={styles.form}>
       <Grid item sm />
       <Grid item sm>
 
-        <img src={AppIcon} alt='App' className={classes.image} />
-        <Typography variant='h2' className={classes.pageTitle}>
+        <img src={AppIcon} alt='App' className={styles.image} />
+        <Typography variant='h2' className={styles.pageTitle}>
           Login
         </Typography>
 
@@ -87,7 +88,7 @@ const Login = () => {
             name='email'
             type='email'
             label='Email'
-            className={classes.textField}
+            className={styles.textField}
             value={email}
             onChange={e => setEmail(e.target.value)}
             helperText={errors.email}
@@ -99,7 +100,7 @@ const Login = () => {
             name='password'
             type='password'
             label='Password'
-            className={classes.textField}
+            className={styles.textField}
             value={password}
             onChange={e => setPassword(e.target.value)}
             helperText={errors.password}
@@ -108,7 +109,7 @@ const Login = () => {
           />
 
           {errors.general && (
-            <Typography variant='body2' className={classes.customError}>
+            <Typography variant='body2' className={styles.customError}>
               {errors.general}
             </Typography>
           )}
@@ -117,12 +118,12 @@ const Login = () => {
             type='submit'
             variant='contained'
             color='primary'
-            className={classes.button}
+            className={styles.button}
             disabled={isLoading}
           >
             Login
             {isLoading && (
-              <CircularProgress className={classes.progress} />
+              <CircularProgress className={styles.progress} />
             )}
           </Button>
 
