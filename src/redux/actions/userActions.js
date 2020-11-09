@@ -1,8 +1,15 @@
-import { SET_USER, SET_ERRORS, CLEAR_ERRORS, LOADING_UI } from '../types'
-//import history from '../utils/history'
+/* eslint-disable no-restricted-globals */
+import {
+  SET_USER,
+  SET_ERRORS,
+  CLEAR_ERRORS,
+  LOADING_UI,
+  SET_UNAUTHENTICATED,
+} from '../types'
+import history from '../../utils/history'
 import axios from 'axios'
 
-export const loginUser = (userData, history) => dispatch => {
+export const LoginUser = (userData, dispatch) => {
   dispatch({ type: LOADING_UI })
 
   axios
@@ -11,23 +18,55 @@ export const loginUser = (userData, history) => dispatch => {
       userData
     )
     .then(res => {
-      const token = `Bearer ${res.data.token}`
-      console.log(res.data)
-      localStorage.setItem('idToken', token)
-      axios.defaults.headers.common['Authorization'] = token
-      dispatch(getUserData())
+      setAuthorizationHeader(res.data.token)
+      dispatch(GetUserData(dispatch))
       dispatch({ type: CLEAR_ERRORS })
       history.push('/')
     })
     .catch(err => {
+      if (err.response) {
+        dispatch({
+          type: SET_ERRORS,
+          payload: err.response.data,
+        })
+      } else {
+        dispatch({
+          type: CLEAR_ERRORS})
+      }
+    })
+}
+
+export const SignupUser = (newUserData, dispatch) => {
+  dispatch({ type: LOADING_UI })
+
+  axios
+    .post(
+      'https://us-central1-listr-fcbc3.cloudfunctions.net/api/signup',
+      newUserData
+    )
+    .then(res => {
+      setAuthorizationHeader(res.data.token)
+      dispatch(GetUserData(dispatch))
+      dispatch({ type: CLEAR_ERRORS })
+      history.push('/')
+    })
+    .catch(e => {
+      console.log(e)
       dispatch({
         type: SET_ERRORS,
-        payload: err.response.data,
+        payload: e.response.data,
       })
     })
 }
 
-export const getUserData = () => dispatch => {
+//wherever this gets called from i need to define dispatch = useDispatch() and pass it in here
+export const LogoutUser = dispatch => {
+  localStorage.removeItem('idToken')
+  delete axios.defaults.headers.common['Authorization']
+  dispatch({ type: SET_UNAUTHENTICATED })
+}
+
+export const GetUserData = dispatch => {
   axios
     .get('https://us-central1-listr-fcbc3.cloudfunctions.net/api/user')
     .then(res => {
@@ -37,4 +76,10 @@ export const getUserData = () => dispatch => {
       })
     })
     .catch(e => console.log(e))
+}
+
+const setAuthorizationHeader = token => {
+  const authToken = `Bearer ${token}`
+  localStorage.setItem('idToken', authToken)
+  axios.defaults.headers.common['Authorization'] = authToken
 }

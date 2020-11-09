@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import AppIcon from '../images/logo192.png'
-import axios from 'axios'
 import { Link } from 'react-router-dom'
-import history from '../utils/history'
+import { useDispatch, useSelector } from 'react-redux'
+import { SignupUser } from '../redux/actions/userActions'
 //Material UI
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -26,67 +26,62 @@ const useStyles = makeStyles(theme => ({
   },
   button: {
     marginTop: 20,
-    position: 'relative'
+    position: 'relative',
   },
   customError: {
     color: 'red',
     fontSize: '0.8rem',
   },
   progress: {
-    position: 'absolute'
-  }
-
+    position: 'absolute',
+  },
 }))
 
 const Signup = () => {
+  const dispatch = useDispatch()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [handle, setHandle] = useState('')
-  const [isLoading, setIsLoading] = useState(false)
-  const [errors, setErrors] = useState({})
+  const isLoading = useSelector(state => state.UI.loading)
+  const errors = useSelector(state => state.UI.errors)
   const styles = useStyles()
 
   const handleSubmit = e => {
     e.preventDefault()
-    setIsLoading(true)
 
     const newUserData = {
       email,
       password,
       confirmPassword,
-      handle
+      handle,
     }
 
-    axios
-      .post(
-        'https://us-central1-listr-fcbc3.cloudfunctions.net/api/signup',
-        newUserData
-      )
-      .then(res => {
-        console.log(res.data)
-        localStorage.setItem('idToken', `Bearer ${res.data.token}`)
-        setIsLoading(false)
-        history.push('/')
-      })
-      .catch(err => {
-        setErrors(err.response.data)
-        setIsLoading(false)
-      })
+    SignupUser(newUserData, dispatch)
   }
 
   return (
     <Grid container className={styles.form}>
       <Grid item sm />
       <Grid item sm>
-
         <img src={AppIcon} alt='App' className={styles.image} />
         <Typography variant='h2' className={styles.pageTitle}>
           Signup
         </Typography>
 
         <form noValidate onSubmit={handleSubmit}>
-
+          <TextField
+            id='handle'
+            name='handle'
+            type='text'
+            label='Handle'
+            className={styles.textField}
+            value={handle}
+            onChange={e => setHandle(e.target.value)}
+            helperText={errors.handle}
+            error={errors.handle ? true : false}
+            fullWidth
+          />
           <TextField
             id='email'
             name='email'
@@ -123,18 +118,6 @@ const Signup = () => {
             error={errors.confirmPassword ? true : false}
             fullWidth
           />
-          <TextField
-            id='handle'
-            name='handle'
-            type='text'
-            label='Handle'
-            className={styles.textField}
-            value={handle}
-            onChange={e => setHandle(e.target.value)}
-            helperText={errors.handle}
-            error={errors.handle ? true : false}
-            fullWidth
-          />
 
           {errors.general && (
             <Typography variant='body2' className={styles.customError}>
@@ -150,16 +133,13 @@ const Signup = () => {
             disabled={isLoading}
           >
             Signup
-            {isLoading && (
-              <CircularProgress className={styles.progress} />
-            )}
+            {isLoading && <CircularProgress className={styles.progress} />}
           </Button>
 
           <br />
           <small>
             Already have an account? Login <Link to='/login'>here</Link>
           </small>
-
         </form>
       </Grid>
       <Grid item sm />

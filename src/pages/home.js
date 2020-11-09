@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Grid from '@material-ui/core/Grid'
 import List from '../components/List'
+import CircularProgress from '@material-ui/core/CircularProgress'
 
 const Home = () => {
   const [lists, setLists] = useState(null)
@@ -21,20 +22,26 @@ const Home = () => {
   }, [])
 
   let recentLists = lists ? (
-    lists.lists.map(list => <List key={list.listId} list={list} />)
+    lists.lists.map(list => (
+      <Grid key={list.listId} item md={4} sm={8} xs={12}>
+        <List key={list.listId} list={list} />
+      </Grid>
+    ))
   ) : (
-    <p>Loading...</p>
+    <CircularProgress size={100} />
   )
 
   return (
-    <Grid container spacing={4}>
-      <Grid item sm={8} xs={12}>
-        {recentLists}
+    <div style={{flex: 1}}>
+      <Grid container spacing={8} style={{ marginTop: 150, marginLeft: 0 }}>
+        <Grid container sm={9} xs={12} spacing={3}>
+          {recentLists}
+        </Grid>
+        <Grid item sm={3} xs={12}>
+          <p>Profile...</p>
+        </Grid>
       </Grid>
-      <Grid item sm={4} xs={12}>
-        <p>Profile...</p>
-      </Grid>
-    </Grid>
+    </div>
   )
 }
 

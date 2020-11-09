@@ -2,9 +2,6 @@
 /* eslint-disable import/no-anonymous-default-export */
 import {
   SET_USER,
-  SET_ERRORS,
-  CLEAR_ERRORS,
-  LOADING_UI,
   SET_AUTHENTICATED,
   SET_UNAUTHENTICATED,
 } from '../types'
@@ -16,7 +13,7 @@ const initState = {
   notifications: [],
 }
 
-export default (state = initState, action) => {
+const userReducer = (state = initState, action) => {
   switch (action.type) {
     case SET_AUTHENTICATED:
       return {
@@ -34,3 +31,5 @@ export default (state = initState, action) => {
       return state
   }
 }
+
+export default userReducer

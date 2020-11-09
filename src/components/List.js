@@ -1,5 +1,5 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
+import {Link} from 'react-router-dom'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
 //Material UI
@@ -16,8 +16,8 @@ const useStyles = makeStyles(theme => ({
     marginBottom: 20,
   },
   content: {
-    padding: 25,
-  },
+    padding: 25
+  }
 }))
 
 const List = ({ list }) => {
