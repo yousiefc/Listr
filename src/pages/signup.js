@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import AppIcon from '../images/logo192.png'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
-import { SignupUser } from '../redux/actions/userActions'
+import { SignupUser, LogoutUser } from '../redux/actions/userActions'
 //Material UI
 import { makeStyles } from '@material-ui/core/styles'
 import Grid from '@material-ui/core/Grid'
@@ -58,6 +58,7 @@ const Signup = () => {
     }
 
     SignupUser(newUserData, dispatch)
+
   }
 
   return (
@@ -65,7 +66,7 @@ const Signup = () => {
       <Grid item sm />
       <Grid item sm>
         <img src={AppIcon} alt='App' className={styles.image} />
-        <Typography variant='h2' className={styles.pageTitle}>
+        <Typography variant='h2' className={styles.pageTitle} color='textSecondary'>
           Signup
         </Typography>
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import {useSelector} from 'react-redux'
+import { useSelector } from 'react-redux'
 
 const AuthRoute = ({ component: Component, ...rest }) => {
   let authenticated = useSelector(state => state.user.authenticated)

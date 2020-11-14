@@ -1,12 +1,16 @@
 // eslint-disable-next-line import/no-anonymous-default-export
 export default {
   palette: {
+    type: 'dark',
     primary: {
-      main: '#ffc107',
+      main: '#1e2133',
     },
     secondary: {
-      main: '#ffd180',
+      main: '#d2d2d6'
     },
+    text: {
+      purple: '#ad33ff'
+    }
   },
   typography: {
     useNextVariants: true,

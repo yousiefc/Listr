@@ -5,6 +5,7 @@ import {
   CLEAR_ERRORS,
   LOADING_UI,
   SET_UNAUTHENTICATED,
+  LOADING_USER
 } from '../types'
 import history from '../../utils/history'
 import axios from 'axios'
@@ -50,12 +51,16 @@ export const SignupUser = (newUserData, dispatch) => {
       dispatch({ type: CLEAR_ERRORS })
       history.push('/')
     })
-    .catch(e => {
-      console.log(e)
-      dispatch({
-        type: SET_ERRORS,
-        payload: e.response.data,
-      })
+    .catch(err => {
+      if (err.response) {
+        dispatch({
+          type: SET_ERRORS,
+          payload: err.response.data,
+        })
+      } else {
+        dispatch({
+          type: CLEAR_ERRORS})
+      }
     })
 }
 
@@ -67,6 +72,7 @@ export const LogoutUser = dispatch => {
 }
 
 export const GetUserData = dispatch => {
+  dispatch({type: LOADING_USER})
   axios
     .get('https://us-central1-listr-fcbc3.cloudfunctions.net/api/user')
     .then(res => {

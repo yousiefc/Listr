@@ -66,7 +66,7 @@ const Login = () => {
       <Grid item sm />
       <Grid item sm>
         <img src={AppIcon} alt='App' className={styles.image} />
-        <Typography variant='h2' className={styles.pageTitle}>
+        <Typography variant='h2' className={styles.pageTitle} color='textSecondary'>
           Login
         </Typography>
 

@@ -4,6 +4,7 @@ import {
   SET_USER,
   SET_AUTHENTICATED,
   SET_UNAUTHENTICATED,
+  LOADING_USER
 } from '../types'
 
 const initState = {
@@ -11,6 +12,7 @@ const initState = {
   credentials: {},
   likes: [],
   notifications: [],
+  loading: false
 }
 
 const userReducer = (state = initState, action) => {
@@ -25,7 +27,13 @@ const userReducer = (state = initState, action) => {
     case SET_USER:
       return {
         authenticated: true,
+        loading: false,
         ...action.payload,
+      }
+    case LOADING_USER:
+      return {
+        ...state,
+        loading: true
       }
     default:
       return state
