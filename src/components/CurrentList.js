@@ -9,7 +9,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
 
-const CurrentList = list => {
+const CurrentList = ({list}) => {
   const styles = useStyles()
   const user = useSelector(state => state.user.credentials)
 
@@ -17,14 +17,15 @@ const CurrentList = list => {
     <div className={styles.root}>
       <Paper
         className={styles.paper}
+        variant='outlined'
       >
         <List className={styles.listItem}
           subheader={
             <ListSubheader component='div' className={styles.subheader}>
-              {list.list.title}
+              {list.title}
             </ListSubheader>
           }>
-          {list.list.body.map(listItem => (
+          {list.body.map(listItem => (
             <>
               <ListItem>
                 <ListItemText primary={listItem} />
@@ -45,16 +46,20 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 500,
   },
   listItem: {
-    backgroundColor: '#4a4d5b'
+    backgroundColor: '#fff',
   },
   paper: {
     maxHeight: 800, 
     overflow: 'auto',
+    borderColor: '#ddd',
+    borderWidth: 2,
+    borderRadius: 6
   },
   subheader: {
     fontSize: '2em',
-    color: theme.palette.text.purple,
-    backgroundColor: 'rgba(0,0,30,0.3)'
+    color: '#fff',
+    backgroundColor: '#4a4d71',
+    boxShadow: '0 5px 7px -5px #333'
   }
 }))
 

@@ -5,11 +5,13 @@ import List from '../components/List'
 import CircularProgress from '@material-ui/core/CircularProgress'
 import CurrentList from '../components/CurrentList'
 import { Typography } from '@material-ui/core'
+import styled from 'styled-components'
 
 const Home = () => {
   const [lists, setLists] = useState(null)
   const [listSelected, setListSelected] = useState(null)
 
+  /* GET LIST OF lISTS */
   useEffect(() => {
     const getLists = async () => {
       await axios
@@ -24,45 +26,57 @@ const Home = () => {
     getLists()
   }, [])
 
+  /* RETURN ALL RECENT LISTS */
   let recentLists = lists ? (
     lists.lists.map(list => (
-      <Grid key={list.listId} item style={{width: '210px'}} >
-        <div onClick={() => setListSelected(list)}>
-          <List
-            key={list.listId}
-            list={list}
-            selected={
-              listSelected ? list.listId === listSelected.listId : false
-            }
-          />
-        </div>
-      </Grid>
+      <div onClick={() => setListSelected(list)}>
+        <List
+          key={list.listId}
+          list={list}
+          selected={listSelected ? list.listId === listSelected.listId : false}
+        />
+      </div>
     ))
   ) : (
     <CircularProgress size={100} />
   )
 
+  /* RETURN CURRENT SELECTED LIST */
   let currentList = listSelected ? (
     <CurrentList list={listSelected} />
   ) : (
     <Typography variant='h5' color='textSecondary'>
-      {' '}
       Select a list to view it here!
     </Typography>
   )
 
+  /* RENDER */
   return (
-    <div style={{ flex: 1 }}>
-      <Grid container justify='center'>
-        <Grid container md={7} xs={12} spacing={2}>
+    <OuterDiv>
+      <OuterGrid container justify='center'>
+        <ListWidgetGrid container item md={7} xs={12}>
           {recentLists}
-        </Grid>
-        <Grid item >
-          {currentList}
-        </Grid>
-      </Grid>
-    </div>
+        </ListWidgetGrid>
+        <CurrentListGrid item>{currentList}</CurrentListGrid>
+      </OuterGrid>
+    </OuterDiv>
   )
 }
+
+
+/* STYLED COMPONENTS */
+const OuterDiv = styled.div`
+  flex-grow: 1;
+`
+const OuterGrid = styled(Grid)``
+
+const ListWidgetGrid = styled(Grid)`
+  @media (max-width: 960px) {
+    justify-content: center;
+  }
+`
+
+const CurrentListGrid = styled(Grid)``
+
 
 export default Home
