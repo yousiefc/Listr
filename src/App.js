@@ -32,7 +32,7 @@ const App = () => {
     } else {
       dispatch({ type: SET_AUTHENTICATED })
       axios.defaults.headers.common['Authorization'] = token
-      dispatch(GetUserData())
+      GetUserData(dispatch)
     }
   }
 

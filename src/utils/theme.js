@@ -3,17 +3,20 @@ export default {
   palette: {
 
     primary: {
-      main: '#342C5E',
+      main: '#4f0ee6',
     },
     secondary: {
-      main: '#d2d2d6'
+      main: '#a6e70d',
+      //highlight: '#9191E9'
     },
     text: {
-      purple: '#9191E9'
-    }
+      timestamp: '#170442'
+    },
+    
   },
   typography: {
     useNextVariants: true,
+    fontFamily: 'Montserrat'
   },
   form: {
     textAlign: 'center',

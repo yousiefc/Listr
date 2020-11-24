@@ -1,30 +1,29 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
 import { useSelector } from 'react-redux'
+import styled, { css } from 'styled-components'
 //MUI
 import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
-import ListSubheader from '@material-ui/core/ListSubheader';
+import ListSubheader from '@material-ui/core/ListSubheader'
 import Divider from '@material-ui/core/Divider'
 import Paper from '@material-ui/core/Paper'
+import { useTheme } from '@material-ui/core/styles';
 
-const CurrentList = ({list}) => {
-  const styles = useStyles()
+const CurrentList = ({ list, dialog }) => {
   const user = useSelector(state => state.user.credentials)
+  const theme = useTheme()
 
   return (
-    <div className={styles.root}>
-      <Paper
-        className={styles.paper}
-        variant='outlined'
-      >
-        <List className={styles.listItem}
+    <Root dialog={dialog}>
+      <ListPaperBackground elevation={6}>
+        <SelectedList
           subheader={
-            <ListSubheader component='div' className={styles.subheader}>
+            <SelectedListSubheader component='div' theme={theme}>
               {list.title}
-            </ListSubheader>
-          }>
+            </SelectedListSubheader>
+          }
+        >
           {list.body.map(listItem => (
             <>
               <ListItem>
@@ -33,34 +32,41 @@ const CurrentList = ({list}) => {
               <Divider />
             </>
           ))}
-        </List>
-      </Paper>
-    </div>
+        </SelectedList>
+      </ListPaperBackground>
+    </Root>
   )
 }
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    width: '100%',
-    minWidth: 400,
-    maxWidth: 500,
-  },
-  listItem: {
-    backgroundColor: '#fff',
-  },
-  paper: {
-    maxHeight: 800, 
-    overflow: 'auto',
-    borderColor: '#ddd',
-    borderWidth: 2,
-    borderRadius: 6
-  },
-  subheader: {
-    fontSize: '2em',
-    color: '#fff',
-    backgroundColor: '#4a4d71',
-    boxShadow: '0 5px 7px -5px #333'
-  }
-}))
+/* STYLED COMPONENTS */
+const Root = styled.div`
+  position: fixed;
+  width: 28%;
+  margin-right: 50px;
+  
+  ${props =>
+    props.dialog &&
+    css`
+      position: relative;
+      width: 100%;
+    `}
+`
+const ListPaperBackground = styled(Paper)`
+  max-height: 750px;
+  overflow: auto;
+  border-radius: 6px;
+`
+
+const SelectedList = styled(List)`
+  background-color: #fff;
+`
+const SelectedListSubheader = styled(ListSubheader)`
+  font-size: 2em;
+  font-weight: 600;
+  color: #fff;
+  background-color: ${props => props.theme.palette.primary.main};
+  box-shadow: 0 5px 7px -2px #777;
+`
+
 
 export default CurrentList

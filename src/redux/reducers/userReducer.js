@@ -4,7 +4,9 @@ import {
   SET_USER,
   SET_AUTHENTICATED,
   SET_UNAUTHENTICATED,
-  LOADING_USER
+  LOADING_USER,
+  LIKE_LIST,
+  UNLIKE_LIST
 } from '../types'
 
 const initState = {
@@ -34,6 +36,22 @@ const userReducer = (state = initState, action) => {
       return {
         ...state,
         loading: true
+      }
+    case LIKE_LIST:
+      return {
+        ...state,
+        likes: [
+          ...state.likes,
+          {
+            userHandle: state.credentials.handle,
+            listId: action.payload.listId
+          }
+        ]
+      }
+    case UNLIKE_LIST:
+      return {
+        ...state,
+        likes: state.likes.filter(like => like.listId !== action.payload.listId)
       }
     default:
       return state

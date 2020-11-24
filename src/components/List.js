@@ -1,115 +1,189 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import dayjs from 'dayjs'
 import relativeTime from 'dayjs/plugin/relativeTime'
+import styled, { css } from 'styled-components'
+import { useSelector, useDispatch } from 'react-redux'
+import { likeList, unlikeList } from '../redux/actions/dataActions'
 //Material UI
-import { makeStyles } from '@material-ui/core/styles'
 import Card from '@material-ui/core/Card'
-//import CardActionArea from '@material-ui/core/CardActionArea'
-//import CardActions from '@material-ui/core/CardActions'
 import CardContent from '@material-ui/core/CardContent'
 import Typography from '@material-ui/core/Typography'
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder'
 import FavoriteIcon from '@material-ui/icons/Favorite'
-import Avatar from '@material-ui/core/Avatar';
+import Avatar from '@material-ui/core/Avatar'
+import IconButton from '@material-ui/core/IconButton'
+import BookmarkBorderIcon from '@material-ui/icons/BookmarkBorder'
+import { useTheme } from '@material-ui/core/styles'
 
 const List = ({ list, selected }) => {
-  const styles = useStyles()
+  const dispatch = useDispatch()
+  const [value, setValue] = useState(0)
+  const user = useSelector(state => state.user)
   dayjs.extend(relativeTime)
+  const theme = useTheme()
+
+  const forceUpdate = () => {
+    return () => setValue(value => ++value)
+  }
+
+  const likedList = () => {
+    if (user.likes && user.likes.find(like => like.listId === list.listId))
+      return true
+    else return false
+  }
+
+  const likeThisList = () => {
+    likeList(list.listId, dispatch)
+  }
+
+  const unlikeThisList = () => {
+    unlikeList(list.listId, dispatch)
+  }
+
+  let authenticated = user.authenticated
+  const likeButton = !authenticated ? (
+    <HeartIconButton disableRipple={true}>
+      <Link to='/login'>
+        <FavoriteBorderIcon style={{ fontSize: 26, color: '#fff' }} />
+      </Link>
+    </HeartIconButton>
+  ) : likedList() ? (
+    <HeartIconButton onClick={unlikeThisList}>
+      <FavoriteIcon style={{ fontSize: 26 }} />
+    </HeartIconButton>
+  ) : (
+    <HeartIconButton onClick={likeThisList}>
+      <FavoriteBorderIcon style={{ fontSize: 26 }} />
+    </HeartIconButton>
+  )
 
   return (
-    <Card
-      className={selected ? styles.cardSelected : styles.card}
-      variant='outlined'
-    >
-      <CardContent className={styles.content}>
-        <div>
-          <div className={styles.top}>
-            <Typography variant='h5' style={{color: '#343747'}}>
-              {list.title}
-            </Typography>
-          </div>
+    <OuterCard raised={true} selected={selected} theme={theme}>
+      <InnerCard>
+        <TopContent>
+          <ListWidgetTitle variant='h5'>{list.title}</ListWidgetTitle>
+          <BookmarkIconButton>
+            <BookmarkBorderIcon style={{ fontSize: 32 }} />
+          </BookmarkIconButton>
+        </TopContent>
 
-          <div className={styles.bottom}>
-            <Avatar src='' className={styles.avatar} />
-            <Typography
-              className={styles.linkColor}
-              variant='body1'
-              component={Link}
-              to={`/users/${list.userHandle}`}
-              noWrap={true}
-              style={{position: 'absolute', left: 35, top: 5}}
-            >
-              {list.userHandle}
-            </Typography>
+        <BottomContent theme={theme}>
+          <UserAvatar src='' />
+          <ListWidgetUserHandle
+            variant='body1'
+            component={Link}
+            to={`/users/${list.userHandle}`}
+            noWrap={true}
+          >
+            {list.userHandle}
+          </ListWidgetUserHandle>
 
-            <Typography variant='body2' color='textSecondary' style={{position: 'absolute', right: 10, top: 5, color: '#c1c1c1'}}>
-              {dayjs(list.createdAt).fromNow()}
-            </Typography>
+          <ListWidgetTimestamp variant='body2'>
+            {dayjs(list.createdAt).fromNow()}
+          </ListWidgetTimestamp>
 
-            <Typography variant='body1' style={{position: 'absolute', right: 50 ,bottom: 6, color: '#fff'}} >
-              {list.likeCount}
-            </Typography>
-            <FavoriteBorderIcon style={{position: 'absolute', right: 20, bottom: 7, color: '#fff' }}/>
+          <ListWidgetLikeCount variant='body1'>
+            {list.likeCount}
+          </ListWidgetLikeCount>
 
-          </div>
-        </div>
-      </CardContent>
-    </Card>
+          {likeButton}
+        </BottomContent>
+      </InnerCard>
+    </OuterCard>
   )
 }
 
-const useStyles = makeStyles(theme => ({
-  card: {
-    display: 'flex',
-    backgroundColor: '#fff',
-    height: 160,
-    borderRadius: '7px 7px 30px 30px',
-    boxShadow: '0 0 0 0',
-    width: 260,
-    margin: 10
-  },
-  cardSelected: {
-    display: 'flex',
-    backgroundColor: '#fff',
-    height: 160,
-    borderWidth: 0,
-    boxShadow: `1px 1px 4px 4px ${theme.palette.text.purple}`,
-    width: 260,
-    margin: 10
-  },
-  content: {
-    padding: 0,
-    display: 'block',
-    width: `100%`
-  },
-  top: {
-    padding: 15,
-    height: 73,
-    width: `88%`,
-    borderColor: '#ddd',
-    borderWidth: 2,
-  },
-  bottom: {
-    position: 'relative',
-    textAlign: 'right',
-    verticalAlign: 'baseline',
-    width: `100%`,
-    height: 57,
-    boxShadow: '1px -5px 7px -5px #333',
-    backgroundColor: '#4a4d71',
+/* STYLED COMPONENTS */
+const OuterCard = styled(Card)`
+  display: flex;
+  background-color: #fff;
+  height: 170px;
+  border-radius: 10px 10px 30px 30px;
+  width: 260px;
+  margin: 10px;
+  box-sizing: border-box;
 
-  },
-  linkColor: {
-    color: '#fff'
-  },
-  avatar: {
-    height: 20,
-    width: 20,
-    position: 'absolute',
-    top: 5,
-    left: 11
-  }
-}))
+  ${props =>
+    props.selected &&
+    css`
+      border: 4px solid ${props.theme.palette.primary.main};
+      border-radius: 11px;
+    `}
+`
+
+const InnerCard = styled(CardContent)`
+  padding: 0;
+  width: 100%;
+  height: 100%;
+`
+
+const TopContent = styled.div`
+  position: relative;
+  padding: 20px;
+  height: 35%;
+`
+
+const BottomContent = styled.div`
+  position: relative;
+  text-align: right;
+  vertical-align: baseline;
+  height: 42%;
+  background-color: ${props => props.theme.palette.primary.main};
+`
+
+const ListWidgetTitle = styled(Typography)`
+  color: #404040;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 800;
+`
+
+const ListWidgetUserHandle = styled(Typography)`
+  position: absolute;
+  left: 35px;
+  top: 5px;
+  color: #fff;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 600;
+`
+const ListWidgetTimestamp = styled(Typography)`
+  position: absolute;
+  right: 10px;
+  top: 5px;
+  color: #ddd;
+  font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
+`
+
+const ListWidgetLikeCount = styled(Typography)`
+  position: absolute;
+  right: 50px;
+  bottom: 6px;
+  color: #fff;
+`
+
+const HeartIconButton = styled(IconButton)`
+  position: absolute;
+  right: 21px;
+  bottom: 8px;
+  color: #fff;
+  padding: 0;
+`
+
+const BookmarkIconButton = styled(IconButton)`
+  position: absolute;
+  right: 19px;
+  top: -7px;
+  padding: 0;
+  color: #4f0ee6;
+`
+
+const UserAvatar = styled(Avatar)`
+  height: 20px;
+  width: 20px;
+  position: absolute;
+  top: 7px;
+  left: 11px;
+`
 
 export default List

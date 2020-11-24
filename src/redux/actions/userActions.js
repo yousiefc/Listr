@@ -71,6 +71,15 @@ export const LogoutUser = dispatch => {
   dispatch({ type: SET_UNAUTHENTICATED })
 }
 
+export const uploadImage = (formData, dispatch) => {
+  dispatch({type: LOADING_USER})
+  axios.post('https://us-central1-listr-fcbc3.cloudfunctions.net/api/user/image', formData)
+    .then(res => {
+      dispatch(GetUserData(dispatch))
+    })
+    .catch(e => console.error(e))
+}
+
 export const GetUserData = dispatch => {
   dispatch({type: LOADING_USER})
   axios
@@ -82,6 +91,15 @@ export const GetUserData = dispatch => {
       })
     })
     .catch(e => console.log(e))
+}
+
+export const editUserDetails = (userDetails, dispatch) => {
+  dispatch({type: LOADING_USER})
+  axios.post('https://us-central1-listr-fcbc3.cloudfunctions.net/api/user', userDetails)
+    .then(() => {
+      dispatch(GetUserData(dispatch))
+    })
+    .catch(e => console.error(e))
 }
 
 const setAuthorizationHeader = token => {
