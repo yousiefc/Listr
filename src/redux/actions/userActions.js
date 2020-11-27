@@ -10,12 +10,14 @@ import {
 import history from '../../utils/history'
 import axios from 'axios'
 
+const baseUrl = process.env.REACT_APP_API
+
 export const LoginUser = (userData, dispatch) => {
   dispatch({ type: LOADING_UI })
 
   axios
     .post(
-      'https://us-central1-listr-fcbc3.cloudfunctions.net/api/login',
+      `${baseUrl}/login`,
       userData
     )
     .then(res => {
@@ -42,7 +44,7 @@ export const SignupUser = (newUserData, dispatch) => {
 
   axios
     .post(
-      'https://us-central1-listr-fcbc3.cloudfunctions.net/api/signup',
+      `${baseUrl}/signup`,
       newUserData
     )
     .then(res => {
@@ -73,7 +75,7 @@ export const LogoutUser = dispatch => {
 
 export const uploadImage = (formData, dispatch) => {
   dispatch({type: LOADING_USER})
-  axios.post('https://us-central1-listr-fcbc3.cloudfunctions.net/api/user/image', formData)
+  axios.post(`${baseUrl}/user/image`, formData)
     .then(res => {
       dispatch(GetUserData(dispatch))
     })
@@ -83,7 +85,7 @@ export const uploadImage = (formData, dispatch) => {
 export const GetUserData = dispatch => {
   dispatch({type: LOADING_USER})
   axios
-    .get('https://us-central1-listr-fcbc3.cloudfunctions.net/api/user')
+    .get(`${baseUrl}/user`)
     .then(res => {
       dispatch({
         type: SET_USER,
@@ -95,7 +97,7 @@ export const GetUserData = dispatch => {
 
 export const editUserDetails = (userDetails, dispatch) => {
   dispatch({type: LOADING_USER})
-  axios.post('https://us-central1-listr-fcbc3.cloudfunctions.net/api/user', userDetails)
+  axios.post(`${baseUrl}/user`, userDetails)
     .then(() => {
       dispatch(GetUserData(dispatch))
     })

@@ -18,14 +18,9 @@ import { useTheme } from '@material-ui/core/styles'
 
 const List = ({ list, selected }) => {
   const dispatch = useDispatch()
-  const [value, setValue] = useState(0)
   const user = useSelector(state => state.user)
   dayjs.extend(relativeTime)
   const theme = useTheme()
-
-  const forceUpdate = () => {
-    return () => setValue(value => ++value)
-  }
 
   const likedList = () => {
     if (user.likes && user.likes.find(like => like.listId === list.listId))

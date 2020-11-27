@@ -16,7 +16,7 @@ export default {
   },
   typography: {
     useNextVariants: true,
-    fontFamily: 'Montserrat'
+    fontFamily: 'Montserrat',
   },
   form: {
     textAlign: 'center',

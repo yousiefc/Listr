@@ -1,4 +1,4 @@
-import { SET_LISTS, LIKE_LIST, UNLIKE_LIST, LOADING_DATA } from '../types'
+import { SET_LISTS, LIKE_LIST, UNLIKE_LIST, LOADING_DATA, DELETE_LIST } from '../types'
 
 const initState = {
   lists: [],
@@ -27,6 +27,12 @@ const dataReducer = (state = initState, action) => {
       )
 
       state.lists[index].likeCount = action.payload.likeCount
+      return {
+        ...state
+      }
+    case DELETE_LIST:
+      index = state.lists.findIndex(list => list.listId === action.payload)
+      state.screams.splice(index, 1)
       return {
         ...state
       }

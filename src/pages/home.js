@@ -98,6 +98,7 @@ const Home = () => {
               aria-labelledby='scroll-dialog-title'
               aria-describedby='scroll-dialog-description'
               fullWidth={true}
+              style ={{borderRadius: 20}}
             >
               <Content
                 dividers={false}
@@ -131,6 +132,7 @@ const Home = () => {
 const OuterDiv = styled.div`
   flex-grow: 1;
   margin-top: 240px;
+
 `
 const OuterGrid = styled(Grid)`
   margin-top: 40px;

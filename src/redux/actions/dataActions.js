@@ -1,11 +1,13 @@
-import { SET_LISTS, LOADING_DATA, LIKE_LIST, UNLIKE_LIST } from '../types'
+import { SET_LISTS, LOADING_DATA, LIKE_LIST, UNLIKE_LIST, DELETE_LIST } from '../types'
 import axios from 'axios'
+
+const baseUrl = process.env.REACT_APP_API
 
 /* GET ALL LISTS */
 export const getLists = dispatch => {
   dispatch({ type: LOADING_DATA })
   axios
-    .get('https://us-central1-listr-fcbc3.cloudfunctions.net/api/lists')
+    .get(`${baseUrl}/lists`)
     .then(res => {
       dispatch({ type: SET_LISTS, payload: res.data })
     })
@@ -18,10 +20,9 @@ export const getLists = dispatch => {
 export const likeList = (listId, dispatch) => {
   axios
     .get(
-      `https://us-central1-listr-fcbc3.cloudfunctions.net/api/list/${listId}/like`
+      `${baseUrl}/list/${listId}/like`
     )
     .then(res => {
-
       dispatch({ type: LIKE_LIST, payload: res.data })
       console.log('DONE LIKE')
     })
@@ -32,11 +33,23 @@ export const likeList = (listId, dispatch) => {
 export const unlikeList = (listId, dispatch) => {
   axios
     .get(
-      `https://us-central1-listr-fcbc3.cloudfunctions.net/api/list/${listId}/unlike`
+      `${baseUrl}/list/${listId}/unlike`
     )
     .then(res => {
       dispatch({ type: UNLIKE_LIST, payload: res.data.listData })
       console.log('DONE UNLIKE')
+    })
+    .catch(e => console.error(e))
+}
+
+/* DELETE A LIST */
+export const deleteList = (listId, dispatch) => {
+  axios
+    .delete(
+      `${baseUrl}/list/${listId}`
+    )
+    .then(() => {
+      dispatch({ type: DELETE_LIST, payload: listId })
     })
     .catch(e => console.error(e))
 }
